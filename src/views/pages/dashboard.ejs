@@ -1,0 +1,102 @@
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">
+            📊 Dashboard
+        </h1>
+        <p class="dashboard-subtitle">
+            Xush kelibsiz, <strong><%= user.name %></strong>!
+        </p>
+    </div>
+    
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-icon">👤</div>
+            <div class="stat-content">
+                <h3 class="stat-title">Profil</h3>
+                <p class="stat-value">Faol</p>
+                <p class="stat-description">Akkaunt holati</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">📅</div>
+            <div class="stat-content">
+                <h3 class="stat-title">Ro'yxatdan o'tgan</h3>
+                <p class="stat-value"><%= formatDate(user.createdAt) %></p>
+                <p class="stat-description">Sana</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">🕒</div>
+            <div class="stat-content">
+                <h3 class="stat-title">Oxirgi kirish</h3>
+                <p class="stat-value">
+                    <%= user.lastLogin ? timeAgo(user.lastLogin) : 'Hech qachon' %>
+                </p>
+                <p class="stat-description">Vaqt</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">🛡️</div>
+            <div class="stat-content">
+                <h3 class="stat-title">Rol</h3>
+                <p class="stat-value">
+                    <%= user.role === 'admin' ? 'Administrator' : user.role === 'moderator' ? 'Moderator' : 'Foydalanuvchi' %>
+                </p>
+                <p class="stat-description">Huquq darajasi</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dashboard-content">
+        <div class="dashboard-section">
+            <h2 class="section-title">Tezkor harakatlar</h2>
+            <div class="action-cards">
+                <a href="/profile" class="action-card">
+                    <div class="action-icon">👤</div>
+                    <h3 class="action-title">Profilni tahrirlash</h3>
+                    <p class="action-description">Shaxsiy ma'lumotlaringizni yangilang</p>
+                </a>
+                
+                <a href="/user/change-password" class="action-card">
+                    <div class="action-icon">🔒</div>
+                    <h3 class="action-title">Parolni o'zgartirish</h3>
+                    <p class="action-description">Akkaunt xavfsizligini oshiring</p>
+                </a>
+                
+                <% if (user.role === 'admin') { %>
+                    <a href="/admin/dashboard" class="action-card">
+                        <div class="action-icon">⚙️</div>
+                        <h3 class="action-title">Admin Panel</h3>
+                        <p class="action-description">Tizimni boshqaring</p>
+                    </a>
+                <% } %>
+            </div>
+        </div>
+        
+        <div class="dashboard-section">
+            <h2 class="section-title">Faoliyat</h2>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon">🔑</div>
+                    <div class="activity-content">
+                        <h4 class="activity-title">Tizimga kirish</h4>
+                        <p class="activity-time">
+                            <%= user.lastLogin ? timeAgo(user.lastLogin) : 'Hech qachon' %>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="activity-item">
+                    <div class="activity-icon">📝</div>
+                    <div class="activity-content">
+                        <h4 class="activity-title">Ro'yxatdan o'tish</h4>
+                        <p class="activity-time"><%= timeAgo(user.createdAt) %></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

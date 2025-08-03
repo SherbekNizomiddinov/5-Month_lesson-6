@@ -1,0 +1,214 @@
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <% if (user.avatar) { %>
+                <img src="<%= user.avatar %>" alt="<%= user.name %>" class="avatar-image">
+            <% } else { %>
+                <div class="avatar-placeholder">
+                    <span class="avatar-text"><%= user.name.charAt(0).toUpperCase() %></span>
+                </div>
+            <% } %>
+        </div>
+        <div class="profile-info">
+            <h1 class="profile-name"><%= user.name %></h1>
+            <p class="profile-email"><%= user.email %></p>
+            <span class="profile-role">
+                <%= user.role === 'admin' ? '👑 Administrator' : user.role === 'moderator' ? '🛡️ Moderator' : '👤 Foydalanuvchi' %>
+            </span>
+        </div>
+    </div>
+    
+    <div class="profile-content">
+        <div class="profile-section">
+            <h2 class="section-title">Shaxsiy ma'lumotlar</h2>
+            
+            <form action="/user/update-profile" method="POST" class="profile-form" id="profileForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name" class="form-label">To'liq ism</label>
+                        <input 
+                            type="text" 
+                            id="name" 
+                            name="name" 
+                            class="form-input" 
+                            value="<%= user.name %>"
+                            required
+                            minlength="2"
+                            maxlength="50"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email manzil</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="form-input" 
+                            value="<%= user.email %>"
+                            required
+                        >
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        💾 Saqlash
+                    </button>
+                    <button type="reset" class="btn btn-outline">
+                        🔄 Bekor qilish
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="profile-section">
+            <h2 class="section-title">Parolni o'zgartirish</h2>
+            
+            <form action="/user/change-password" method="POST" class="profile-form" id="passwordForm">
+                <div class="form-group">
+                    <label for="currentPassword" class="form-label">Joriy parol</label>
+                    <div class="password-input">
+                        <input 
+                            type="password" 
+                            id="currentPassword" 
+                            name="currentPassword" 
+                            class="form-input" 
+                            placeholder="••••••••"
+                            required
+                        >
+                        <button type="button" class="password-toggle" data-target="currentPassword">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newPassword" class="form-label">Yangi parol</label>
+                        <div class="password-input">
+                            <input 
+                                type="password" 
+                                id="newPassword" 
+                                name="newPassword" 
+                                class="form-input" 
+                                placeholder="••••••••"
+                                required
+                                minlength="6"
+                            >
+                            <button type="button" class="password-toggle" data-target="newPassword">
+                                👁️
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Parolni tasdiqlang</label>
+                        <div class="password-input">
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                class="form-input" 
+                                placeholder="••••••••"
+                                required
+                            >
+                            <button type="button" class="password-toggle" data-target="confirmPassword">
+                                👁️
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        🔒 Parolni o'zgartirish
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="profile-section">
+            <h2 class="section-title">Akkount ma'lumotlari</h2>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Ro'yxatdan o'tgan sana:</span>
+                    <span class="info-value"><%= formatDate(user.createdAt) %></span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label">Oxirgi yangilanish:</span>
+                    <span class="info-value"><%= formatDate(user.updatedAt) %></span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label">Oxirgi kirish:</span>
+                    <span class="info-value">
+                        <%= user.lastLogin ? formatDate(user.lastLogin) : 'Hech qachon' %>
+                    </span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label">Akkount holati:</span>
+                    <span class="info-value status-<%= user.isActive ? 'active' : 'inactive' %>">
+                        <%= user.isActive ? '🟢 Faol' : '🔴 Nofaol' %>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% 
+const pageScript = `
+    // Password toggles
+    const passwordToggles = document.querySelectorAll('.password-toggle');
+    passwordToggles.forEach(toggle => {
+        toggle.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+    });
+    
+    // Password confirmation
+    const newPasswordInput = document.getElementById('newPassword');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    
+    function checkPasswordMatch() {
+        const newPassword = newPasswordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        
+        if (confirmPassword.length > 0) {
+            if (newPassword === confirmPassword) {
+                confirmPasswordInput.style.borderColor = '#38a169';
+            } else {
+                confirmPasswordInput.style.borderColor = '#e53e3e';
+            }
+        } else {
+            confirmPasswordInput.style.borderColor = '';
+        }
+    }
+    
+    newPasswordInput.addEventListener('input', checkPasswordMatch);
+    confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+    
+    // Form submissions
+    const passwordForm = document.getElementById('passwordForm');
+    passwordForm.addEventListener('submit', function(e) {
+        const newPassword = newPasswordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        
+        if (newPassword !== confirmPassword) {
+            e.preventDefault();
+            alert('Yangi parollar mos kelmaydi!');
+            return;
+        }
+    });
+`;
+%>
+
+<%- contentFor('pageScript', pageScript) %>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ro'yxatdan o'tish - Auth System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+</head>
+<body>
+    <!-- Orqaga tugmasi brauzerni tepasida -->
+    <button class="browser-back-button" onclick="window.location.href='/'">
+        ← Bosh sahifa
+    </button>
+
+    <div class="app-container">
+        <div class="login-container register-container">
+            <div class="login-header">
+                <h1>📝 Ro'yxatdan o'tish</h1>
+                <p class="login-subtitle">Yangi akkount yaratish uchun ma'lumotlaringizni kiriting</p>
+            </div>
+
+            <form id="registerForm" class="login-form">
+                <div class="input-group">
+                    <label class="form-label" for="name">
+                        👤 To'liq ism
+                    </label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        placeholder="Ismingizni kiriting"
+                        class="form-input" 
+                        required
+                        autocomplete="name"
+                        minlength="2"
+                    >
+                    <span class="error-message" id="nameError"></span>
+                </div>
+
+                <div class="input-group">
+                    <label class="form-label" for="email">
+                        📧 Email manzil
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="email@example.com"
+                        class="form-input" 
+                        required
+                        autocomplete="email"
+                    >
+                    <span class="error-message" id="emailError"></span>
+                </div>
+
+                <div class="input-group">
+                    <label class="form-label" for="password">
+                        🔒 Parol
+                    </label>
+                    <div class="password-input-container">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="••••••••"
+                            class="form-input" 
+                            required
+                            autocomplete="new-password"
+                            minlength="6"
+                        >
+                        <button type="button" class="password-toggle" id="passwordToggle">
+                            👁️
+                        </button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <span class="strength-text" id="strengthText">Parol kuchini kiriting</span>
+                    </div>
+                    <span class="error-message" id="passwordError"></span>
+                </div>
+
+                <div class="input-group">
+                    <label class="form-label" for="confirmPassword">
+                        🔒 Parolni tasdiqlang
+                    </label>
+                    <div class="password-input-container">
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            name="confirmPassword" 
+                            placeholder="••••••••"
+                            class="form-input" 
+                            required
+                            autocomplete="new-password"
+                        >
+                        <button type="button" class="password-toggle" id="confirmPasswordToggle">
+                            👁️
+                        </button>
+                    </div>
+                    <span class="error-message" id="confirmPasswordError"></span>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                        <span class="checkmark"></span>
+                        <a href="#" class="terms-link">Foydalanish shartlari</a>ga roziman
+                    </label>
+                </div>
+
+                <button type="submit" class="primary-btn submit-btn" id="registerSubmitBtn">
+                    <span>Ro'yxatdan o'tish</span>
+                </button>
+
+            </form>
+
+            <div class="footer-links">
+                <p class="register-text">
+                    Akkauntingiz bormi? 
+                    <a href="/login" class="register-link">
+                        Kirish
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Agar foydalanuvchi allaqachon kiritilgan bo'lsa, profilga yo'naltirish
+            if (typeof authManager !== 'undefined' && authManager.isAuthenticated()) {
+                window.location.href = '/profile';
+                return;
+            }
+
+            const registerForm = document.getElementById('registerForm');
+            const passwordToggle = document.getElementById('passwordToggle');
+            const confirmPasswordToggle = document.getElementById('confirmPasswordToggle');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const submitBtn = document.getElementById('registerSubmitBtn');
+
+            // Parolni ko'rsatish/yashirish
+            passwordToggle.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.textContent = type === 'password' ? '👁️' : '🙈';
+            });
+
+            confirmPasswordToggle.addEventListener('click', function() {
+                const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                confirmPasswordInput.setAttribute('type', type);
+                this.textContent = type === 'password' ? '👁️' : '🙈';
+            });
+
+            // Parol kuchini tekshirish
+            function checkPasswordStrength(password) {
+                const strengthFill = document.getElementById('strengthFill');
+                const strengthText = document.getElementById('strengthText');
+                
+                let strength = 0;
+                let text = '';
+                let color = '';
+
+                if (password.length >= 6) strength += 1;
+                if (password.match(/[a-z]/)) strength += 1;
+                if (password.match(/[A-Z]/)) strength += 1;
+                if (password.match(/[0-9]/)) strength += 1;
+                if (password.match(/[^a-zA-Z0-9]/)) strength += 1;
+
+                switch (strength) {
+                    case 0:
+                    case 1:
+                        text = 'Juda zaif';
+                        color = '#e53e3e';
+                        break;
+                    case 2:
+                        text = 'Zaif';
+                        color = '#fd7f28';
+                        break;
+                    case 3:
+                        text = 'O\'rtacha';
+                        color = '#ffd60a';
+                        break;
+                    case 4:
+                        text = 'Kuchli';
+                        color = '#38a169';
+                        break;
+                    case 5:
+                        text = 'Juda kuchli';
+                        color = '#22c55e';
+                        break;
+                }
+
+                strengthFill.style.width = `${(strength / 5) * 100}%`;
+                strengthFill.style.backgroundColor = color;
+                strengthText.textContent = text;
+                strengthText.style.color = color;
+            }
+
+            passwordInput.addEventListener('input', function() {
+                checkPasswordStrength(this.value);
+            });
+
+            // Form validation va submission
+            function validateForm() {
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                let isValid = true;
+
+                // Name validation
+                const nameError = document.getElementById('nameError');
+                if (!name) {
+                    nameError.textContent = 'Ism kiritish majburiy';
+                    nameError.style.display = 'block';
+                    isValid = false;
+                } else if (name.length < 2) {
+                    nameError.textContent = 'Ism kamida 2 ta belgidan iborat bo\'lishi kerak';
+                    nameError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    nameError.style.display = 'none';
+                }
+
+                // Email validation
+                const emailError = document.getElementById('emailError');
+                if (!email) {
+                    emailError.textContent = 'Email kiritish majburiy';
+                    emailError.style.display = 'block';
+                    isValid = false;
+                } else if (!/\S+@\S+\.\S+/.test(email)) {
+                    emailError.textContent = 'Email formati noto\'g\'ri';
+                    emailError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    emailError.style.display = 'none';
+                }
+
+                // Password validation
+                const passwordError = document.getElementById('passwordError');
+                if (!password) {
+                    passwordError.textContent = 'Parol kiritish majburiy';
+                    passwordError.style.display = 'block';
+                    isValid = false;
+                } else if (password.length < 6) {
+                    passwordError.textContent = 'Parol kamida 6 ta belgidan iborat bo\'lishi kerak';
+                    passwordError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    passwordError.style.display = 'none';
+                }
+
+                // Confirm password validation
+                const confirmPasswordError = document.getElementById('confirmPasswordError');
+                if (!confirmPassword) {
+                    confirmPasswordError.textContent = 'Parolni tasdiqlash majburiy';
+                    confirmPasswordError.style.display = 'block';
+                    isValid = false;
+                } else if (password !== confirmPassword) {
+                    confirmPasswordError.textContent = 'Parollar mos kelmaydi';
+                    confirmPasswordError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    confirmPasswordError.style.display = 'none';
+                }
+
+                return isValid;
+            }
+
+            // Form submission
+            registerForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!validateForm()) {
+                    return;
+                }
+
+                const originalText = submitBtn.innerHTML;
+                
+                // Loading holatini ko'rsatish
+                submitBtn.innerHTML = '<div class="spinner"></div><span>Ro\'yxatdan o\'tish...</span>';
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+                
+                const formData = new FormData(e.target);
+                const userData = {
+                    name: formData.get('name').trim(),
+                    email: formData.get('email').trim(),
+                    password: formData.get('password')
+                };
+
+                try {
+                    const result = await authManager.register(userData);
+                    
+                    if (result.success) {
+                        // Muvaffaqiyatli ro'yxatdan o'tish
+                        submitBtn.innerHTML = '<span>✅ Muvaffaqiyatli!</span>';
+                        setTimeout(() => {
+                            window.location.href = '/profile';
+                        }, 1500);
+                    } else {
+                        // Xatolik ko'rsatish
+                        throw new Error(result.message || 'Ro\'yxatdan o\'tish xatoligi');
+                    }
+                } catch (error) {
+                    console.error('Register error:', error);
+                    alert(error.message || 'Tarmoq xatoligi. Qaytadan urinib ko\'ring.');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

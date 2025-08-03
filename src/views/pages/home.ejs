@@ -1,0 +1,101 @@
+<div class="hero-section">
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Xush kelibsiz!
+                <span class="hero-highlight">EJS Auth System</span>ga
+            </h1>
+            <p class="hero-description">
+                Zamonaviy va xavfsiz authentication tizimi. 
+                Tez, oson va ishonchli foydalanuvchi boshqaruvi.
+            </p>
+            
+            <% if (!isAuthenticated) { %>
+                <div class="hero-actions">
+                    <a href="/auth/register" class="btn btn-primary btn-lg">
+                        🚀 Boshlash
+                    </a>
+                    <a href="/auth/login" class="btn btn-outline btn-lg">
+                        🔑 Kirish
+                    </a>
+                </div>
+            <% } else { %>
+                <div class="hero-actions">
+                    <a href="/dashboard" class="btn btn-primary btn-lg">
+                        📊 Dashboard
+                    </a>
+                    <a href="/profile" class="btn btn-outline btn-lg">
+                        👤 Profil
+                    </a>
+                </div>
+                <div class="welcome-message">
+                    <p>Salom, <strong><%= user.name %></strong>! 👋</p>
+                </div>
+            <% } %>
+        </div>
+        
+        <div class="hero-image">
+            <div class="hero-graphic">
+                <div class="graphic-element element-1">🔐</div>
+                <div class="graphic-element element-2">👤</div>
+                <div class="graphic-element element-3">🛡️</div>
+                <div class="graphic-element element-4">⚡</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="container">
+        <h2 class="section-title">Xususiyatlar</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3 class="feature-title">Xavfsizlik</h3>
+                <p class="feature-description">
+                    Zamonaviy shifrlash va xavfsizlik standartlari
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Tezlik</h3>
+                <p class="feature-description">
+                    Tez va samarali ishlash, minimal yuklanish vaqti
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3 class="feature-title">Responsive</h3>
+                <p class="feature-description">
+                    Barcha qurilmalarda mukammal ishlash
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🛠️</div>
+                <h3 class="feature-title">Oson boshqaruv</h3>
+                <p class="feature-description">
+                    Intuitiv interfeys va oson foydalanish
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% if (!isAuthenticated) { %>
+<div class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2 class="cta-title">Bugun boshlang!</h2>
+            <p class="cta-description">
+                Bir necha daqiqada ro'yxatdan o'ting va barcha imkoniyatlardan foydalaning
+            </p>
+            <a href="/auth/register" class="btn btn-primary btn-lg">
+                📝 Ro'yxatdan o'tish
+            </a>
+        </div>
+    </div>
+</div>
+<% } %>

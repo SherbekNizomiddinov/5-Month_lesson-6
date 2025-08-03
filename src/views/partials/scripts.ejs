@@ -1,0 +1,8 @@
+<!-- Global Scripts -->
+<script src="/js/auth.js"></script>
+
+<% if (typeof customJS !== 'undefined' && customJS) { %>
+    <% customJS.forEach(function(js) { %>
+        <script src="<%= js %>"></script>
+    <% }); %>
+<% } %>

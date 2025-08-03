@@ -1,0 +1,60 @@
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3 class="footer-title">
+                    <span class="footer-icon">🔐</span>
+                    <%= appName %>
+                </h3>
+                <p class="footer-description">
+                    Zamonaviy va xavfsiz authentication tizimi
+                </p>
+            </div>
+            
+            <div class="footer-section">
+                <h4 class="footer-subtitle">Havolalar</h4>
+                <ul class="footer-links">
+                    <li><a href="/">Bosh sahifa</a></li>
+                    <% if (isAuthenticated) { %>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/profile">Profil</a></li>
+                    <% } else { %>
+                        <li><a href="/auth/login">Kirish</a></li>
+                        <li><a href="/auth/register">Ro'yxatdan o'tish</a></li>
+                    <% } %>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4 class="footer-subtitle">Ma'lumot</h4>
+                <ul class="footer-links">
+                    <li><a href="/about">Biz haqimizda</a></li>
+                    <li><a href="/contact">Aloqa</a></li>
+                    <li><a href="/privacy">Maxfiylik</a></li>
+                    <li><a href="/terms">Shartlar</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4 class="footer-subtitle">Aloqa</h4>
+                <div class="footer-contact">
+                    <p>📧 info@example.com</p>
+                    <p>📞 +998 90 123 45 67</p>
+                    <p>📍 Toshkent, O'zbekiston</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-copyright">
+                <p>&copy; <%= currentYear %> <%= appName %>. Barcha huquqlar himoyalangan.</p>
+            </div>
+            <div class="footer-social">
+                <a href="#" class="social-link">📘</a>
+                <a href="#" class="social-link">📷</a>
+                <a href="#" class="social-link">🐦</a>
+                <a href="#" class="social-link">💼</a>
+            </div>
+        </div>
+    </div>
+</footer>

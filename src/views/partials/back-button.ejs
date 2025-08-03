@@ -1,0 +1,5 @@
+<% if (typeof showBackButton !== 'undefined' && showBackButton) { %>
+    <button class="browser-back-button" onclick="window.location.href='<%= backUrl || '/' %>'">
+        <%= backText || '← Bosh sahifa' %>
+    </button>
+<% } %>

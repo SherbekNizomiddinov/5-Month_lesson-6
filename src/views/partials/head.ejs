@@ -1,0 +1,10 @@
+<!-- Additional head content -->
+<% if (typeof customCSS !== 'undefined' && customCSS) { %>
+    <% customCSS.forEach(function(css) { %>
+        <link rel="stylesheet" href="<%= css %>">
+    <% }); %>
+<% } %>
+
+<% if (typeof customMeta !== 'undefined' && customMeta) { %>
+    <%- customMeta %>
+<% } %>

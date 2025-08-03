@@ -1,0 +1,94 @@
+<nav class="navbar">
+    <div class="nav-container">
+        <!-- Logo -->
+        <div class="nav-brand">
+            <a href="/" class="brand-link">
+                <span class="brand-icon">🔐</span>
+                <span class="brand-text"><%= appName %></span>
+            </a>
+        </div>
+        
+        <!-- Mobile menu button -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <span class="hamburger"></span>
+            <span class="hamburger"></span>
+            <span class="hamburger"></span>
+        </button>
+        
+        <!-- Navigation Links -->
+        <div class="nav-menu" id="navMenu">
+            <div class="nav-links">
+                <a href="/" class="nav-link <%= currentUrl === '/' ? 'active' : '' %>">
+                    🏠 Bosh sahifa
+                </a>
+                
+                <% if (isAuthenticated) { %>
+                    <a href="/dashboard" class="nav-link <%= currentUrl === '/dashboard' ? 'active' : '' %>">
+                        📊 Dashboard
+                    </a>
+                    <a href="/profile" class="nav-link <%= currentUrl === '/profile' ? 'active' : '' %>">
+                        👤 Profil
+                    </a>
+                    
+                    <% if (user && user.role === 'admin') { %>
+                        <div class="nav-dropdown">
+                            <button class="nav-dropdown-btn">
+                                ⚙️ Admin
+                                <span class="dropdown-arrow">▼</span>
+                            </button>
+                            <div class="nav-dropdown-menu">
+                                <a href="/admin/dashboard" class="dropdown-link">Dashboard</a>
+                                <a href="/admin/users" class="dropdown-link">Foydalanuvchilar</a>
+                            </div>
+                        </div>
+                    <% } %>
+                <% } %>
+            </div>
+            
+            <!-- User Menu -->
+            <div class="nav-user">
+                <% if (isAuthenticated) { %>
+                    <div class="user-dropdown">
+                        <button class="user-dropdown-btn">
+                            <div class="user-avatar">
+                                <% if (user.avatar) { %>
+                                    <img src="<%= user.avatar %>" alt="<%= user.name %>">
+                                <% } else { %>
+                                    <span class="avatar-text"><%= user.name.charAt(0).toUpperCase() %></span>
+                                <% } %>
+                            </div>
+                            <span class="user-name"><%= user.name %></span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="user-dropdown-menu">
+                            <div class="dropdown-header">
+                                <div class="user-info">
+                                    <strong><%= user.name %></strong>
+                                    <small><%= user.email %></small>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="/profile" class="dropdown-link">
+                                👤 Profil
+                            </a>
+                            <a href="/dashboard" class="dropdown-link">
+                                📊 Dashboard
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <form action="/auth/logout" method="POST" class="logout-form">
+                                <button type="submit" class="dropdown-link logout-btn">
+                                    🚪 Chiqish
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="auth-buttons">
+                        <a href="/auth/login" class="btn btn-outline">Kirish</a>
+                        <a href="/auth/register" class="btn btn-primary">Ro'yxatdan o'tish</a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</nav>

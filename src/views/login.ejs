@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirish - Auth System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔑</text></svg>">
+</head>
+<body>
+    <!-- Orqaga tugmasi brauzerni tepasida -->
+    <button class="browser-back-button" onclick="window.location.href='/'">
+        ← Bosh sahifa
+    </button>
+
+    <div class="app-container">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>🔑 Kirish</h1>
+                <p class="login-subtitle">Akkauntingizga kirish uchun ma'lumotlaringizni kiriting</p>
+            </div>
+
+            <form id="loginForm" class="login-form">
+                <div class="input-group">
+                    <label class="form-label" for="email">
+                        📧 Email manzil
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="email@example.com"
+                        class="form-input" 
+                        required
+                        autocomplete="email"
+                    >
+                    <span class="error-message" id="emailError"></span>
+                </div>
+
+                <div class="input-group">
+                    <label class="form-label" for="password">
+                        🔒 Parol
+                    </label>
+                    <div class="password-input-container">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="••••••••"
+                            class="form-input" 
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button type="button" class="password-toggle" id="passwordToggle">
+                            👁️
+                        </button>
+                    </div>
+                    <span class="error-message" id="passwordError"></span>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        <span class="checkmark"></span>
+                        Meni eslab qol
+                    </label>
+                    <a href="#" class="forgot-password">
+                        Parolni unutdingizmi?
+                    </a>
+                </div>
+
+                <button type="submit" class="primary-btn submit-btn" id="loginSubmitBtn">
+                    <span>Kirish</span>
+                </button>
+
+            </form>
+
+            <div class="footer-links">
+                <p class="register-text">
+                    Akkauntingiz yo'qmi? 
+                    <a href="/register" class="register-link">
+                        Ro'yxatdan o'ting
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Agar foydalanuvchi allaqachon kiritilgan bo'lsa, profilga yo'naltirish
+            if (typeof authManager !== 'undefined' && authManager.isAuthenticated()) {
+                window.location.href = '/profile';
+                return;
+            }
+
+            const loginForm = document.getElementById('loginForm');
+            const passwordToggle = document.getElementById('passwordToggle');
+            const passwordInput = document.getElementById('password');
+            const submitBtn = document.getElementById('loginSubmitBtn');
+
+            // Parolni ko'rsatish/yashirish
+            passwordToggle.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.textContent = type === 'password' ? '👁️' : '🙈';
+            });
+
+            // Form validation
+            function validateForm() {
+                const email = document.getElementById('email').value.trim();
+                const password = passwordInput.value;
+                let isValid = true;
+
+                // Email validation
+                const emailError = document.getElementById('emailError');
+                if (!email) {
+                    emailError.textContent = 'Email kiritish majburiy';
+                    emailError.style.display = 'block';
+                    isValid = false;
+                } else if (!/\S+@\S+\.\S+/.test(email)) {
+                    emailError.textContent = 'Email formati noto\'g\'ri';
+                    emailError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    emailError.style.display = 'none';
+                }
+
+                // Password validation
+                const passwordError = document.getElementById('passwordError');
+                if (!password) {
+                    passwordError.textContent = 'Parol kiritish majburiy';
+                    passwordError.style.display = 'block';
+                    isValid = false;
+                } else if (password.length < 6) {
+                    passwordError.textContent = 'Parol kamida 6 ta belgidan iborat bo\'lishi kerak';
+                    passwordError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    passwordError.style.display = 'none';
+                }
+
+                return isValid;
+            }
+
+            // Form submission
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!validateForm()) {
+                    return;
+                }
+
+                const originalText = submitBtn.innerHTML;
+                
+                // Loading holatini ko'rsatish
+                submitBtn.innerHTML = '<div class="spinner"></div><span>Kirish...</span>';
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+                
+                const formData = new FormData(e.target);
+                const credentials = {
+                    email: formData.get('email').trim(),
+                    password: formData.get('password')
+                };
+
+                try {
+                    const result = await authManager.login(credentials);
+                    
+                    if (result.success) {
+                        // Muvaffaqiyatli kirish
+                        submitBtn.innerHTML = '<span>✅ Muvaffaqiyatli!</span>';
+                        setTimeout(() => {
+                            window.location.href = '/profile';
+                        }, 1500);
+                    } else {
+                        // Xatolik ko'rsatish
+                        throw new Error(result.message || 'Kirish xatoligi');
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    alert(error.message || 'Tarmoq xatoligi. Qaytadan urinib ko\'ring.');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

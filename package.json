@@ -1,20 +1,39 @@
 {
-  "name": "auth-system",
+  "name": "ejs-auth-system",
   "version": "1.0.0",
-  "type": "module",
+  "description": "Complete EJS Authentication System",
+  "main": "app.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.4.3",
-    "express-validator": "^7.0.1"
+    "compression": "^1.7.4",
+    "connect-mongo": "^5.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.21.2",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.17.3",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.5.0",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
-  }
+  },
+  "keywords": [
+    "ejs",
+    "express",
+    "authentication",
+    "mongodb",
+    "nodejs"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
 }

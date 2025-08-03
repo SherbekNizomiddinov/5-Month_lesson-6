@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bosh sahifa - Auth System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+</head>
+<body>
+    <div class="app-container">
+        <div class="welcome-container">
+            <div class="welcome-header">
+                <h1>Xush kelibsiz!</h1>
+                <p class="welcome-subtitle">Tizimga kirish uchun quyidagi tugmalardan birini tanlang</p>
+            </div>
+
+            <div class="button-group">
+                <a href="/login" class="primary-btn login-btn">
+                    <span>🔑 Kirish</span>
+                </a>
+                <a href="/register" class="primary-btn register-btn">
+                    <span>📝 Ro'yxatdan o'tish</span>
+                </a>
+            </div>
+
+            <div class="welcome-info">
+                <p class="info-text">
+                    <strong>Kirish:</strong> Mavjud akkauntingiz bilan tizimga kiring<br>
+                    <strong>Ro'yxatdan o'tish:</strong> Yangi akkount yarating
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        // Agar foydalanuvchi allaqachon kiritilgan bo'lsa, profilga yo'naltirish
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof authManager !== 'undefined' && authManager.isAuthenticated()) {
+                const user = authManager.getUser();
+                if (user) {
+                    // Foydalanuvchi ma'lumotlarini ko'rsatish
+                    const welcomeHeader = document.querySelector('.welcome-header h1');
+                    welcomeHeader.textContent = `Xush kelibsiz, ${user.name}!`;
+                    
+                    // Tugmalarni o'zgartirish
+                    const buttonGroup = document.querySelector('.button-group');
+                    buttonGroup.innerHTML = `
+                        <a href="/profile" class="primary-btn login-btn">
+                            <span>👤 Profilga o'tish</span>
+                        </a>
+                        <button onclick="authManager.logout()" class="primary-btn register-btn logout-style">
+                            <span>🚪 Chiqish</span>
+                        </button>
+                    `;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
