@@ -346,7 +346,7 @@ app.get("/profile", (req, res) => {
     showBackButton: true,
     backUrl: "/",
     backText: "🏠 Bosh sahifa",
-    user: req.session.user,
+    user: req.session.user || {} // Agar foydalanuvchi mavjud bo'lmasa, bo'sh ob'ekt
   })
 })
 

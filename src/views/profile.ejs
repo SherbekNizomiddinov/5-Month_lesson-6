@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="uz">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil - Auth System</title>
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👤</text></svg>">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👤</text></svg>">
 </head>
+
 <body>
     <!-- Orqaga tugmasi brauzerni tepasida -->
     <button class="browser-back-button" onclick="window.location.href='/'">
@@ -17,9 +20,10 @@
         <div class="profile-content-wrapper">
             <div class="profile-header">
                 <div class="profile-title">
-                    <h1>👤 Profil</h1>
-                    <p class="profile-subtitle">Shaxsiy ma'lumotlaringizni ko'ring va tahrirlang</p>
+                    <h1>👤 Profil</h1><br><br>
+                    <p class="profile-subtitle">Shaxsiy Malumotlaringiz</p>
                 </div>
+                <!-- Profil actions -->
                 <div class="profile-actions">
                     <button class="edit-btn" id="editProfileBtn">
                         ✏️ Tahrirlash
@@ -52,27 +56,22 @@
                         <label>👤 To'liq ism:</label>
                         <span id="userName">-</span>
                     </div>
-                    
                     <div class="info-item">
                         <label>📧 Email manzil:</label>
                         <span id="userEmail">-</span>
                     </div>
-                    
                     <div class="info-item">
                         <label>🏷️ Rol:</label>
                         <span id="userRole">-</span>
                     </div>
-                    
                     <div class="info-item">
                         <label>📅 Ro'yxatdan o'tgan sana:</label>
                         <span id="userCreatedAt">-</span>
                     </div>
-                    
                     <div class="info-item">
                         <label>🔄 Oxirgi yangilanish:</label>
                         <span id="userUpdatedAt">-</span>
                     </div>
-                    
                     <div class="info-item">
                         <label>✅ Akkount holati:</label>
                         <span id="userStatus" class="active">Faol</span>
@@ -89,36 +88,23 @@
                 <h2>✏️ Profilni tahrirlash</h2>
                 <button class="modal-close" id="closeModal">&times;</button>
             </div>
-            
+
             <form class="modal-form" id="editForm">
                 <div class="input-group">
                     <label class="form-label" for="editName">
                         👤 To'liq ism
                     </label>
-                    <input 
-                        type="text" 
-                        id="editName" 
-                        name="name" 
-                        class="form-input" 
-                        required
-                        minlength="2"
-                    >
+                    <input type="text" id="editName" name="name" class="form-input" required minlength="2">
                 </div>
-                
+
                 <div class="input-group">
                     <label class="form-label" for="editEmail">
                         📧 Email manzil
                     </label>
-                    <input 
-                        type="email" 
-                        id="editEmail" 
-                        name="email" 
-                        class="form-input" 
-                        required
-                    >
+                    <input type="email" id="editEmail" name="email" class="form-input" required>
                 </div>
             </form>
-            
+
             <div class="modal-actions">
                 <button class="cancel-btn" id="cancelEdit">Bekor qilish</button>
                 <button class="save-btn" id="saveProfile">💾 Saqlash</button>
@@ -131,9 +117,9 @@
         let currentUser = null;
         let profileLoaded = false;
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             console.log("Profile page loaded");
-            
+
             // Redirect loop ni oldini olish
             if (profileLoaded) {
                 console.log("Profile already loaded, skipping");
@@ -177,7 +163,7 @@
 
             // Modal tashqarisini bosish orqali yopish
             if (editModal) {
-                editModal.addEventListener('click', function(e) {
+                editModal.addEventListener('click', function (e) {
                     if (e.target === editModal) {
                         closeEditModal();
                     }
@@ -188,7 +174,7 @@
         // Profil ma'lumotlarini yuklash
         async function loadProfile() {
             console.log("Loading profile data...");
-            
+
             const loadingState = document.getElementById('loadingState');
             const errorState = document.getElementById('errorState');
             const userInfo = document.getElementById('userInfo');
@@ -201,212 +187,213 @@
             try {
                 const result = await authManager.getProfile();
                 console.log("Profile result:", result);
-                
+
                 if (result.success && result.user) {
                     currentUser = result.user;
                     displayUserInfo(result.user);
-                    
+
                     // Ma'lumotlarni ko'rsatish
                     if (loadingState) loadingState.style.display = 'none';
                     if (userInfo) userInfo.style.display = 'block';
-                
-                console.log("Profile loaded successfully");
-            } else {
-                throw new Error(result.message || 'Profil ma\'lumotlarini olishda xatolik');
-            }
-        } catch (error) {
-            console.error('Profile load error:', error);
-            
-            // Xatolikni ko'rsatish
-            if (loadingState) loadingState.style.display = 'none';
-            if (errorState) errorState.style.display = 'block';
-            
-            const errorMessage = document.getElementById('errorMessage');
-            if (errorMessage) {
-                errorMessage.textContent = error.message || 'Ma\'lumotlarni yuklashda xatolik yuz berdi';
-            }
-        }
-    }
 
-    // Foydalanuvchi ma'lumotlarini ko'rsatish
-    function displayUserInfo(user) {
-        console.log("Displaying user info:", user);
-        
-        const elements = {
-            userName: document.getElementById('userName'),
-            userEmail: document.getElementById('userEmail'),
-            userRole: document.getElementById('userRole'),
-            userCreatedAt: document.getElementById('userCreatedAt'),
-            userUpdatedAt: document.getElementById('userUpdatedAt'),
-            userStatus: document.getElementById('userStatus')
-        };
+                    console.log("Profile loaded successfully");
+                } else {
+                    throw new Error(result.message || 'Profil ma\'lumotlarini olishda xatolik');
+                }
+            } catch (error) {
+                console.error('Profile load error:', error);
 
-        if (elements.userName) elements.userName.textContent = user.name || '-';
-        if (elements.userEmail) elements.userEmail.textContent = user.email || '-';
-        
-        // Rolni ko'rsatish
-        if (elements.userRole) {
-            const roleText = user.role === 'admin' ? '👑 Administrator' : 
-                           user.role === 'moderator' ? '🛡️ Moderator' : 
-                           '👤 Foydalanuvchi';
-            elements.userRole.textContent = roleText;
-        }
-        
-        // Sanalarni formatlash
-        if (elements.userCreatedAt) {
-            const createdDate = user.createdAt ? formatDate(user.createdAt) : '-';
-            elements.userCreatedAt.textContent = createdDate;
-        }
-        
-        if (elements.userUpdatedAt) {
-            const updatedDate = user.updatedAt ? formatDate(user.updatedAt) : '-';
-            elements.userUpdatedAt.textContent = updatedDate;
-        }
-        
-        // Holat
-        if (elements.userStatus) {
-            if (user.isActive !== false) {
-                elements.userStatus.textContent = '🟢 Faol';
-                elements.userStatus.className = 'active';
-            } else {
-                elements.userStatus.textContent = '🔴 Nofaol';
-                elements.userStatus.className = 'inactive';
+                // Xatolikni ko'rsatish
+                if (loadingState) loadingState.style.display = 'none';
+                if (errorState) errorState.style.display = 'block';
+
+                const errorMessage = document.getElementById('errorMessage');
+                if (errorMessage) {
+                    errorMessage.textContent = error.message || 'Ma\'lumotlarni yuklashda xatolik yuz berdi';
+                }
             }
         }
-    }
 
-    // Sanani formatlash
-    function formatDate(dateString) {
-        try {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('uz-UZ', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        } catch (error) {
-            console.error("Date format error:", error);
-            return dateString;
-        }
-    }
+        // Foydalanuvchi ma'lumotlarini ko'rsatish
+        function displayUserInfo(user) {
+            console.log("Displaying user info:", user);
 
-    // Tahrirlash modalini ochish
-    function openEditModal() {
-        if (!currentUser) {
-            console.log("No current user data");
-            return;
-        }
-        
-        const editModal = document.getElementById('editModal');
-        const editName = document.getElementById('editName');
-        const editEmail = document.getElementById('editEmail');
-        
-        if (!editModal || !editName || !editEmail) {
-            console.log("Modal elements not found");
-            return;
-        }
-        
-        // Joriy ma'lumotlarni modalga yuklash
-        editName.value = currentUser.name || '';
-        editEmail.value = currentUser.email || '';
-        
-        editModal.style.display = 'flex';
-        editName.focus();
-    }
+            const elements = {
+                userName: document.getElementById('userName'),
+                userEmail: document.getElementById('userEmail'),
+                userRole: document.getElementById('userRole'),
+                userCreatedAt: document.getElementById('userCreatedAt'),
+                userUpdatedAt: document.getElementById('userUpdatedAt'),
+                userStatus: document.getElementById('userStatus')
+            };
 
-    // Tahrirlash modalini yopish
-    function closeEditModal() {
-        const editModal = document.getElementById('editModal');
-        if (editModal) {
-            editModal.style.display = 'none';
-        }
-    }
+            if (elements.userName) elements.userName.textContent = user.name || '-';
+            if (elements.userEmail) elements.userEmail.textContent = user.email || '-';
 
-    // Profil o'zgarishlarini saqlash
-    async function saveProfileChanges() {
-        const editName = document.getElementById('editName');
-        const editEmail = document.getElementById('editEmail');
-        const saveBtn = document.getElementById('saveProfile');
-        
-        if (!editName || !editEmail || !saveBtn) {
-            console.log("Form elements not found");
-            return;
+            // Rolni ko'rsatish
+            if (elements.userRole) {
+                const roleText = user.role === 'admin' ? '👑 Administrator' :
+                    user.role === 'moderator' ? '🛡️ Moderator' :
+                        '👤 Foydalanuvchi';
+                elements.userRole.textContent = roleText;
+            }
+
+            // Sanalarni formatlash
+            if (elements.userCreatedAt) {
+                const createdDate = user.createdAt ? formatDate(user.createdAt) : '-';
+                elements.userCreatedAt.textContent = createdDate;
+            }
+
+            if (elements.userUpdatedAt) {
+                const updatedDate = user.updatedAt ? formatDate(user.updatedAt) : '-';
+                elements.userUpdatedAt.textContent = updatedDate;
+            }
+
+            // Holat
+            if (elements.userStatus) {
+                if (user.isActive !== false) {
+                    elements.userStatus.textContent = '🟢 Faol';
+                    elements.userStatus.className = 'active';
+                } else {
+                    elements.userStatus.textContent = '🔴 Nofaol';
+                    elements.userStatus.className = 'inactive';
+                }
+            }
         }
-        
-        // Validation
-        if (!editName.value.trim()) {
-            alert('Ism kiritish majburiy');
+
+        // Sanani formatlash
+        function formatDate(dateString) {
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('uz-UZ', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch (error) {
+                console.error("Date format error:", error);
+                return dateString;
+            }
+        }
+
+        // Tahrirlash modalini ochish
+        function openEditModal() {
+            if (!currentUser) {
+                console.log("No current user data");
+                return;
+            }
+
+            const editModal = document.getElementById('editModal');
+            const editName = document.getElementById('editName');
+            const editEmail = document.getElementById('editEmail');
+
+            if (!editModal || !editName || !editEmail) {
+                console.log("Modal elements not found");
+                return;
+            }
+
+            // Joriy ma'lumotlarni modalga yuklash
+            editName.value = currentUser.name || '';
+            editEmail.value = currentUser.email || '';
+
+            editModal.style.display = 'flex';
             editName.focus();
-            return;
         }
-        
-        if (!editEmail.value.trim()) {
-            alert('Email kiritish majburiy');
-            editEmail.focus();
-            return;
+
+        // Tahrirlash modalini yopish
+        function closeEditModal() {
+            const editModal = document.getElementById('editModal');
+            if (editModal) {
+                editModal.style.display = 'none';
+            }
         }
-        
-        if (!/\S+@\S+\.\S+/.test(editEmail.value)) {
-            alert('Email formati noto\'g\'ri');
-            editEmail.focus();
-            return;
-        }
-        
-        const originalText = saveBtn.innerHTML;
-        
-        try {
-            // Loading holati
-            saveBtn.innerHTML = '<div class="spinner"></div><span>Saqlanmoqda...</span>';
-            saveBtn.disabled = true;
-            
-            // Demo uchun - haqiqiy API chaqiruvi o'rniga
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            // Ma'lumotlarni yangilash
-            currentUser.name = editName.value.trim();
-            currentUser.email = editEmail.value.trim();
-            currentUser.updatedAt = new Date().toISOString();
-            
-            // LocalStorage ni yangilash
-            localStorage.setItem('user', JSON.stringify(currentUser));
-            
-            // UI ni yangilash
-            displayUserInfo(currentUser);
-            
-            // Muvaffaqiyat
-            saveBtn.innerHTML = '✅ Saqlandi!';
-            setTimeout(() => {
-                closeEditModal();
+
+        // Profil o'zgarishlarini saqlash
+        async function saveProfileChanges() {
+            const editName = document.getElementById('editName');
+            const editEmail = document.getElementById('editEmail');
+            const saveBtn = document.getElementById('saveProfile');
+
+            if (!editName || !editEmail || !saveBtn) {
+                console.log("Form elements not found");
+                return;
+            }
+
+            // Validation
+            if (!editName.value.trim()) {
+                alert('Ism kiritish majburiy');
+                editName.focus();
+                return;
+            }
+
+            if (!editEmail.value.trim()) {
+                alert('Email kiritish majburiy');
+                editEmail.focus();
+                return;
+            }
+
+            if (!/\S+@\S+\.\S+/.test(editEmail.value)) {
+                alert('Email formati noto\'g\'ri');
+                editEmail.focus();
+                return;
+            }
+
+            const originalText = saveBtn.innerHTML;
+
+            try {
+                // Loading holati
+                saveBtn.innerHTML = '<div class="spinner"></div><span>Saqlanmoqda...</span>';
+                saveBtn.disabled = true;
+
+                // Demo uchun - haqiqiy API chaqiruvi o'rniga
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Ma'lumotlarni yangilash
+                currentUser.name = editName.value.trim();
+                currentUser.email = editEmail.value.trim();
+                currentUser.updatedAt = new Date().toISOString();
+
+                // LocalStorage ni yangilash
+                localStorage.setItem('user', JSON.stringify(currentUser));
+
+                // UI ni yangilash
+                displayUserInfo(currentUser);
+
+                // Muvaffaqiyat
+                saveBtn.innerHTML = '✅ Saqlandi!';
+                setTimeout(() => {
+                    closeEditModal();
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.disabled = false;
+                }, 1500);
+
+            } catch (error) {
+                console.error('Save profile error:', error);
+                alert('Saqlashda xatolik yuz berdi. Qaytadan urinib ko\'ring.');
                 saveBtn.innerHTML = originalText;
                 saveBtn.disabled = false;
-            }, 1500);
-            
-        } catch (error) {
-            console.error('Save profile error:', error);
-            alert('Saqlashda xatolik yuz berdi. Qaytadan urinib ko\'ring.');
-            saveBtn.innerHTML = originalText;
-            saveBtn.disabled = false;
+            }
         }
-    }
 
-    // Keyboard shortcuts
-    document.addEventListener('keydown', function(e) {
-        // Escape tugmasi bilan modalni yopish
-        if (e.key === 'Escape') {
-            closeEditModal();
-        }
-        
-        // Ctrl+E bilan tahrirlash modalini ochish
-        if (e.ctrlKey && e.key === 'e') {
-            e.preventDefault();
-            openEditModal();
-        }
-    });
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function (e) {
+            // Escape tugmasi bilan modalni yopish
+            if (e.key === 'Escape') {
+                closeEditModal();
+            }
 
-    // Global functions
-    window.loadProfile = loadProfile;
-</script>
+            // Ctrl+E bilan tahrirlash modalini ochish
+            if (e.ctrlKey && e.key === 'e') {
+                e.preventDefault();
+                openEditModal();
+            }
+        });
+
+        // Global functions
+        window.loadProfile = loadProfile;
+    </script>
 </body>
+
 </html>
